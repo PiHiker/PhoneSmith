@@ -17,7 +17,9 @@ Features
 Installation
 ------------
 Clone the repository to your local machine:
+
 git clone https://github.com/PiHiker/PhoneSmith.git
+
 cd PhoneSmith
 
 Usage

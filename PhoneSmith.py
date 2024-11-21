@@ -1,5 +1,5 @@
 """
-Phonesmith: The ultimate tool for crafting phone numbers in various formats.
+PhoneSmith: The ultimate tool for crafting phone numbers in various formats.
 Author: PiHiker
 GitHub: https://github.com/PiHiker/PhoneSmith
 """
@@ -43,7 +43,7 @@ def main():
     Dynamically set the default output file based on the area code.
     """
     parser = argparse.ArgumentParser(
-        description="Phonesmith: Generate formatted phone number wordlists.",
+        description="PhoneSmith: Generate formatted phone number wordlists.",
         usage="python3 PhoneSmith.py [area_code] [--output OUTPUT]",
         epilog="If no area code is provided, you will be prompted to enter it."
     )
@@ -74,7 +74,7 @@ def main():
     # Set the default output file if not provided
     output_file = args.output if args.output else f"{area_code}-wordlist.txt"
 
-    print(f"Phonesmith is crafting phone numbers for area code {area_code}...")
+    print(f"PhoneSmith is crafting phone numbers for area code {area_code}...")
     generate_phone_numbers(area_code, output_file)
     print(f"Wordlist saved to {output_file}")
 

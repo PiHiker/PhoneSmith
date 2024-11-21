@@ -43,12 +43,15 @@ Command-Line Arguments
 Examples
 --------
 1. Generate phone numbers for area code 123 and save to 123-wordlist.txt:
+   
    python3 PhoneSmith.py 123
 
-2. Generate phone numbers for area code 456 and save to mylist.txt:
+3. Generate phone numbers for area code 456 and save to mylist.txt:
+   
    python3 PhoneSmith.py 456 --output mylist.txt
 
-3. Run the script without an area code (interactive prompt):
+5. Run the script without an area code (interactive prompt):
+   
    python3 PhoneSmith.py
    Please enter a 3-digit area code: 789
    PhoneSmith is crafting phone numbers for area code 789...

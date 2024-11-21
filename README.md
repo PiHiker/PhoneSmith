@@ -30,6 +30,7 @@ Ensure Python 3.x is installed on your system. If not, download it from python.o
 Usage
 -----
 Run PhoneSmith using the command line:
+
 python3 PhoneSmith.py [area_code] [--output OUTPUT]
 
 Command-Line Arguments

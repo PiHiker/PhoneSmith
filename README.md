@@ -1,6 +1,6 @@
 PhoneSmith
 ==========
-PhoneSmith is a Python tool for generating and formatting phone numbers in multiple styles based on a one area code. Whether you're working on dialing, data analysis, CTF challenges, or penetration testing.
+PhoneSmith is a Python tool for generating and formatting phone numbers in multiple styles based on one area code.  Whether you're working on dialing, data analysis, CTF challenges, or penetration testing.
 PhoneSmith crafts comprehensive wordlists of phone numbers for a specified area code.
 
 <img src="assets/PhoneSmith.jpg" alt="PhoneSmith Logo" width="300">
@@ -54,9 +54,9 @@ Command-Line Arguments
 
 Examples
 --------
-1. Generate phone numbers for area code 123 and save to 123-wordlist.txt:
+1. Generate phone numbers for area code 721 and save to 721-wordlist.txt:
    
-   python3 PhoneSmith.py 123
+   python3 PhoneSmith.py 721
 
 3. Generate phone numbers for area code 456 and save to mylist.txt:
    

@@ -53,13 +53,18 @@ Examples
 5. Run the script without an area code (interactive prompt):
    
    python3 PhoneSmith.py
+   
    Please enter a 3-digit area code: 789
+   
    PhoneSmith is crafting phone numbers for area code 789...
+   
    Wordlist saved to 789-wordlist.txt
+   
 
 Output
 ------
 The generated file will contain all possible phone numbers in the specified formats, for example:
+
 1230000000
 1+1230000000
 1-123-000-0000

@@ -5,35 +5,58 @@ GitHub: https://github.com/PiHiker/PhoneSmith
 """
 
 import argparse
+from pathlib import Path
+
+LINES_PER_NUMBER = 10
+WRITE_BUFFER_SIZE = 1000
 
 
-def generate_phone_numbers(area_code, output_file):
+def validate_area_code(value):
+    if not value.isdigit() or len(value) != 3:
+        raise ValueError("Area code must be a 3-digit number.")
+    return value
+
+
+def resolve_output_path(area_code, output_file):
+    filename = output_file or f"{area_code}-wordlist.txt"
+    path = Path(filename)
+    if path.exists() and path.is_dir():
+        raise ValueError("Output path must be a file, not a directory.")
+    if path.parent != Path("."):
+        path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def format_numbers(area_code, num):
+    return [
+        f"{area_code}{num}",
+        f"1+{area_code}{num}",
+        f"1{area_code}{num}",
+        f"{area_code}-{num[:3]}-{num[3:]}",
+        f"1-{area_code}-{num[:3]}-{num[3:]}",
+        f"1+{area_code}-{num[:3]}-{num[3:]}",
+        f"({area_code}) {num[:3]}-{num[3:]}",
+        f"1 ({area_code}) {num[:3]}-{num[3:]}",
+        f"+1 {area_code} {num[:3]} {num[3:]}",
+        f"{num}",
+    ]
+
+
+def generate_phone_numbers(area_code, output_path, limit):
     """
     Generate all possible phone numbers for the given area code
     and save them to the specified output file in multiple formats.
     """
-    with open(output_file, "w") as file:
-        for i in range(10000000):  # Generate numbers from 0000000 to 9999999
-            num = f"{str(i).zfill(7)}"
-            # Basic formats
-            file.write(f"{area_code}{num}\n")            # Example: 721xxxxxxx
-            file.write(f"1+{area_code}{num}\n")          # Example: 1+721xxxxxxx
-            file.write(f"1{area_code}{num}\n")           # Example: 1721xxxxxxx
-
-            # Dashed formats
-            file.write(f"{area_code}-{num[:3]}-{num[3:]}\n")   # Example: 721-xxx-xxxx
-            file.write(f"1-{area_code}-{num[:3]}-{num[3:]}\n") # Example: 1-721-xxx-xxxx
-            file.write(f"1+{area_code}-{num[:3]}-{num[3:]}\n") # Example: 1+721-xxx-xxxx
-
-            # Parentheses formats
-            file.write(f"({area_code}) {num[:3]}-{num[3:]}\n")       # Example: (721) xxx-xxxx
-            file.write(f"1 ({area_code}) {num[:3]}-{num[3:]}\n")     # Example: 1 (721) xxx-xxxx
-
-            # International formats
-            file.write(f"+1 {area_code} {num[:3]} {num[3:]}\n")      # Example: +1 721 xxx xxxx
-
-            # Local format (7-digit dialing)
-            file.write(f"{num}\n")                                   # Example: xxxxxxx
+    buffer = []
+    with output_path.open("w", encoding="utf-8") as file:
+        for i in range(limit):  # Generate numbers from 0000000 to limit
+            num = f"{i:07d}"
+            buffer.extend(format_numbers(area_code, num))
+            if len(buffer) >= WRITE_BUFFER_SIZE * LINES_PER_NUMBER:
+                file.write("\n".join(buffer) + "\n")
+                buffer.clear()
+        if buffer:
+            file.write("\n".join(buffer) + "\n")
 
 
 def main():
@@ -59,6 +82,12 @@ def main():
         type=str,
         help="The output file to save the wordlist. Defaults to '<area_code>-wordlist.txt'."
     )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=10000000,
+        help="Limit how many 7-digit numbers to generate (default: 10000000)."
+    )
     args = parser.parse_args()
 
     # Prompt for the area code if not provided
@@ -66,17 +95,18 @@ def main():
     if not area_code:
         area_code = input("Please enter a 3-digit area code: ").strip()
 
-    # Validate the area code
-    if not area_code.isdigit() or len(area_code) != 3:
-        print("Error: Area code must be a 3-digit number.")
+    try:
+        area_code = validate_area_code(area_code)
+        if args.limit <= 0:
+            raise ValueError("Limit must be a positive integer.")
+        output_path = resolve_output_path(area_code, args.output)
+    except ValueError as exc:
+        print(f"Error: {exc}")
         return
 
-    # Set the default output file if not provided
-    output_file = args.output if args.output else f"{area_code}-wordlist.txt"
-
     print(f"PhoneSmith is crafting phone numbers for area code {area_code}...")
-    generate_phone_numbers(area_code, output_file)
-    print(f"Wordlist saved to {output_file}")
+    generate_phone_numbers(area_code, output_path, args.limit)
+    print(f"Wordlist saved to {output_path}")
 
 
 if __name__ == "__main__":

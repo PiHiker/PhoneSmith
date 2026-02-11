@@ -27,22 +27,22 @@ def resolve_output_path(area_code, output_file):
     return path
 
 
-def format_numbers(area_code, num):
+def format_numbers(area_code, num, country_code="1"):
     return [
         f"{area_code}{num}",
-        f"1+{area_code}{num}",
-        f"1{area_code}{num}",
+        f"{country_code}+{area_code}{num}",
+        f"{country_code}{area_code}{num}",
         f"{area_code}-{num[:3]}-{num[3:]}",
-        f"1-{area_code}-{num[:3]}-{num[3:]}",
-        f"1+{area_code}-{num[:3]}-{num[3:]}",
+        f"{country_code}-{area_code}-{num[:3]}-{num[3:]}",
+        f"{country_code}+{area_code}-{num[:3]}-{num[3:]}",
         f"({area_code}) {num[:3]}-{num[3:]}",
-        f"1 ({area_code}) {num[:3]}-{num[3:]}",
-        f"+1 {area_code} {num[:3]} {num[3:]}",
+        f"{country_code} ({area_code}) {num[:3]}-{num[3:]}",
+        f"+{country_code} {area_code} {num[:3]} {num[3:]}",
         f"{num}",
     ]
 
 
-def generate_phone_numbers(area_code, output_path, limit):
+def generate_phone_numbers(area_code, output_path, limit, country_code="1"):
     """
     Generate all possible phone numbers for the given area code
     and save them to the specified output file in multiple formats.
@@ -51,7 +51,7 @@ def generate_phone_numbers(area_code, output_path, limit):
     with output_path.open("w", encoding="utf-8") as file:
         for i in range(limit):  # Generate numbers from 0000000 to limit
             num = f"{i:07d}"
-            buffer.extend(format_numbers(area_code, num))
+            buffer.extend(format_numbers(area_code, num, country_code))
             if len(buffer) >= WRITE_BUFFER_SIZE * LINES_PER_NUMBER:
                 file.write("\n".join(buffer) + "\n")
                 buffer.clear()
@@ -88,6 +88,12 @@ def main():
         default=10000000,
         help="Limit how many 7-digit numbers to generate (default: 10000000)."
     )
+    parser.add_argument(
+        "--country-code",
+        type=str,
+        default="1",
+        help="The country calling code (default: 1 for US/Canada). Examples: 44 (UK), 91 (India), 61 (Australia)."
+    )
     args = parser.parse_args()
 
     # Prompt for the area code if not provided
@@ -95,8 +101,11 @@ def main():
     if not area_code:
         area_code = input("Please enter a 3-digit area code: ").strip()
 
+    country_code = args.country_code
     try:
         area_code = validate_area_code(area_code)
+        if not country_code.isdigit() or len(country_code) < 1 or len(country_code) > 3:
+            raise ValueError("Country code must be a 1-3 digit number.")
         if args.limit <= 0:
             raise ValueError("Limit must be a positive integer.")
         output_path = resolve_output_path(area_code, args.output)
@@ -104,8 +113,8 @@ def main():
         print(f"Error: {exc}")
         return
 
-    print(f"PhoneSmith is crafting phone numbers for area code {area_code}...")
-    generate_phone_numbers(area_code, output_path, args.limit)
+    print(f"PhoneSmith is crafting phone numbers for area code {area_code} (country code +{country_code})...")
+    generate_phone_numbers(area_code, output_path, args.limit, country_code)
     print(f"Wordlist saved to {output_path}")
 
 

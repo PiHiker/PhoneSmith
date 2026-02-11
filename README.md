@@ -16,6 +16,7 @@ PhoneSmith is a Python tool for generating and formatting phone numbers in multi
   - International formats: +1 123 xxx xxxx
   - Shortened local formats: xxxxxxx (local dialing)
 - Supports dynamic area code input for flexibility.
+- Configurable country calling code (default: 1 for US/Canada). Supports international codes such as 44 (UK), 91 (India), 61 (Australia), and more.
 - Default output file includes the area code (e.g., 123-wordlist.txt).
 - Memory-efficient: Writes generated phone numbers directly to a file without overwhelming system resources.
 
@@ -44,12 +45,14 @@ Ensure Python 3.x is installed on your system. If not, download it from [python.
 Run PhoneSmith using the command line:
 
 ```bash
-python3 PhoneSmith.py [area_code] [--output OUTPUT]
+python3 PhoneSmith.py [area_code] [--output OUTPUT] [--country-code CODE] [--limit LIMIT]
 ```
 
 ### Command-Line Arguments
 - area_code (optional): The 3-digit area code for the phone numbers (e.g., 123). If not provided, the script will prompt you to enter it interactively.
 - --output OUTPUT (optional): The output file to save the wordlist. Defaults to `<area_code>-wordlist.txt`.
+- --country-code CODE (optional): The country calling code to use (e.g., 44 for UK, 91 for India). Defaults to `1` (US/Canada).
+- --limit LIMIT (optional): Limit how many 7-digit numbers to generate. Defaults to `10000000`.
 
 ### Examples
 1. Generate phone numbers for area code 721 and save to 721-wordlist.txt:
@@ -62,6 +65,12 @@ python3 PhoneSmith.py [area_code] [--output OUTPUT]
 
    ```bash
    python3 PhoneSmith.py 456 --output mylist.txt
+   ```
+
+4. Generate phone numbers using the UK country code (+44):
+
+   ```bash
+   python3 PhoneSmith.py 212 --country-code 44
    ```
 
 5. Run the script without an area code (interactive prompt):
@@ -79,9 +88,30 @@ The generated file will contain all possible phone numbers in the specified form
 ```text
 1230000000
 1+1230000000
+11230000000
+123-000-0000
 1-123-000-0000
+1+123-000-0000
 (123) 000-0000
+1 (123) 000-0000
 +1 123 000 0000
+0000000
+...
+```
+
+When using a different country code (e.g., `--country-code 44`):
+
+```text
+2120000000
+44+2120000000
+442120000000
+212-000-0000
+44-212-000-0000
+44+212-000-0000
+(212) 000-0000
+44 (212) 000-0000
++44 212 000 0000
+0000000
 ...
 ```
 
